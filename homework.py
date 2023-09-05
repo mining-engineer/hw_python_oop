@@ -1,8 +1,14 @@
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
-    def __init__(self, training, duration, distance, speed, calories) -> None:
-        self.training = training
+    def __init__(self,
+                 training_type,
+                 duration,
+                 distance,
+                 speed,
+                 calories
+                 ) -> None:
+        self.training = training_type
         self.duration = duration
         self.distance = distance
         self.speed = speed
@@ -15,7 +21,7 @@ class InfoMessage:
                         f'Ср. скорость: {self.speed:.3f} км/ч; '
                         f'Потрачено ккал: {self.calories:.3f}'
                         )
-        return message
+        return print(message)
 
 
 class Training:
@@ -88,6 +94,7 @@ class SportsWalking(Training):
 
     CALORIES_WEIGHT_MULTIPLIER_1: float = 0.035
     CCALORIES_WEIGHT_MULTIPLIER_2: float = 0.029
+    TRANSFORM_MS_TO_KMH: float = 0.278
 
     def __init__(self,
                  action: int,
@@ -104,7 +111,9 @@ class SportsWalking(Training):
     def get_spent_calories(self) -> float:
         return ((self.CALORIES_WEIGHT_MULTIPLIER_1
                  * self.weight
-                 + ((self.get_mean_speed() / (1000 / 3600)) ** 2 / self.height)
+                 + ((self.get_mean_speed()
+                     / self.TRANSFORM_MS_TO_KMH) ** 2
+                    / self.height)
                  * self.CCALORIES_WEIGHT_MULTIPLIER_2 * self.weight
                  )
                 * self.duration * Training.MINUTE_IN_HOUR
@@ -115,6 +124,7 @@ class Swimming(Training):
     """Тренировка: плавание."""
     CALORIES_SPEED_MULTIPLIER: float = 1.1
     LEN_STEP: float = 1.38
+    CALORIES_MULTIPLIER: int = 2
 
     def __init__(self,
                  action: int,
@@ -143,7 +153,7 @@ class Swimming(Training):
     def get_spent_calories(self) -> float:
         return ((self.get_mean_speed()
                 + self.CALORIES_SPEED_MULTIPLIER
-                 ) * 2
+                 ) * self.CALORIES_MULTIPLIER
                 * self.weight * self.duration
                 )
 
@@ -162,7 +172,7 @@ def read_package(workout_type: str, data: list) -> Training:
 def main(training: Training) -> None:
     """Главная функция."""
     info = training.show_training_info()
-    print(info.get_message())
+    info.get_message()
 
 
 if __name__ == '__main__':

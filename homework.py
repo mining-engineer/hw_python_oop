@@ -110,14 +110,13 @@ class SportsWalking(Training):
         super().show_training_info
 
     def get_spent_calories(self) -> float:
-        return (self.CALORIES_WEIGHT_MULTIPLIER_1
+        return ((self.CALORIES_WEIGHT_MULTIPLIER_1
                 * self.weight
-                + ((self.get_mean_speed()
-                    / self.TRANSFORM_MS_TO_KMH) ** 2
-                    / (self.height / self.CONVERT_SM_TO_M)
-                   * self.CCALORIES_WEIGHT_MULTIPLIER_2 * self.weight)
-                * self.duration * Training.MINUTE_IN_HOUR
-                )
+                + ((self.get_mean_speed() * self.TRANSFORM_MS_TO_KMH) ** 2
+                   / (self.height / self.CONVERT_SM_TO_M))
+                * self.CCALORIES_WEIGHT_MULTIPLIER_2
+                * self.weight)
+                * (self.duration * Training.MINUTE_IN_HOUR))
 
 
 class Swimming(Training):

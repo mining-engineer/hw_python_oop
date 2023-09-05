@@ -95,6 +95,7 @@ class SportsWalking(Training):
     CALORIES_WEIGHT_MULTIPLIER_1: float = 0.035
     CCALORIES_WEIGHT_MULTIPLIER_2: float = 0.029
     TRANSFORM_MS_TO_KMH: float = 0.278
+    CONVERT_SM_TO_M: int = 100
 
     def __init__(self,
                  action: int,
@@ -109,13 +110,12 @@ class SportsWalking(Training):
         super().show_training_info
 
     def get_spent_calories(self) -> float:
-        return ((self.CALORIES_WEIGHT_MULTIPLIER_1
-                 * self.weight
-                 + ((self.get_mean_speed()
-                     / self.TRANSFORM_MS_TO_KMH) ** 2
-                    / self.height)
-                 * self.CCALORIES_WEIGHT_MULTIPLIER_2 * self.weight
-                 )
+        return (self.CALORIES_WEIGHT_MULTIPLIER_1
+                * self.weight
+                + ((self.get_mean_speed()
+                    / self.TRANSFORM_MS_TO_KMH) ** 2
+                    / (self.height / self.CONVERT_SM_TO_M)
+                   * self.CCALORIES_WEIGHT_MULTIPLIER_2 * self.weight)
                 * self.duration * Training.MINUTE_IN_HOUR
                 )
 

@@ -1,5 +1,4 @@
 from dataclasses import asdict, dataclass
-import sys
 
 
 @dataclass
@@ -10,14 +9,14 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
-    message: str = ('Тип тренировки: {training_type}; '
+    MESSAGE: str = ('Тип тренировки: {training_type}; '
                     'Длительность: {duration:.3f} ч.; '
                     'Дистанция: {distance:.3f} км; '
                     'Ср. скорость: {speed:.3f} км/ч; '
                     'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self) -> str:
-        return self.message.format(**asdict(self))
+        return self.MESSAGE.format(**asdict(self))
 
 
 class Training:
@@ -50,12 +49,11 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        message_object: InfoMessage = InfoMessage(self.__class__.__name__,
-                                                  self.duration,
-                                                  self.get_distance(),
-                                                  self.get_mean_speed(),
-                                                  self.get_spent_calories())
-        return message_object
+        return InfoMessage(self.__class__.__name__,
+                           self.duration,
+                           self.get_distance(),
+                           self.get_mean_speed(),
+                           self.get_spent_calories())
 
 
 class Running(Training):
@@ -141,15 +139,14 @@ class Swimming(Training):
 
 def read_package(workout_class: str, data: list[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    try:
-        workout_classes: dict = {'SWM': Swimming,
-                                 'RUN': Running,
-                                 'WLK': SportsWalking}
+    workout_classes: dict = {'SWM': Swimming,
+                             'RUN': Running,
+                             'WLK': SportsWalking}
+    if workout_class not in workout_classes:
+        raise Exception("Не верный тип тренировки " + workout_class)
 
+    else:
         return workout_classes[workout_class](*data)
-    except KeyError:
-        print("Не верный тип тренировки")
-        sys.exit(1)
 
 
 def main(training: Training) -> None:
